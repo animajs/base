@@ -1,13 +1,12 @@
-define("arale/base/1.1.1/base-debug", [ "arale/class/1.1.0/class-debug", "arale/events/1.1.0/events-debug", "./aspect-debug", "./attribute-debug" ], function(require, exports, module) {
+define("anima/base/2.0.0/base-debug", [ "anima/class/2.0.0/class-debug", "anima/events/1.1.0/events-debug", "./aspect-debug", "./attribute-debug" ], function(require, exports, module) {
     // Base
     // ---------
     // Base 是一个基础类，提供 Class、Events、Attrs 和 Aspect 支持。
-    var Class = require("arale/class/1.1.0/class-debug");
-    var Events = require("arale/events/1.1.0/events-debug");
+    var Class = require("anima/class/2.0.0/class-debug");
+    var Events = require("anima/events/1.1.0/events-debug");
     var Aspect = require("./aspect-debug");
     var Attribute = require("./attribute-debug");
     module.exports = Class.create({
-        Implements: [ Events, Aspect, Attribute ],
         initialize: function(config) {
             this.initAttrs(config);
             // Automatically register `this._onChangeAttr` method as
@@ -25,7 +24,7 @@ define("arale/base/1.1.1/base-debug", [ "arale/class/1.1.0/class-debug", "arale/
             // https://github.com/aralejs/widget/issues/50
             this.destroy = function() {};
         }
-    });
+    }).implement([ Events, Aspect, Attribute ]);
     function parseEventsFromInstance(host, attrs) {
         for (var attr in attrs) {
             if (attrs.hasOwnProperty(attr)) {
@@ -41,7 +40,7 @@ define("arale/base/1.1.1/base-debug", [ "arale/class/1.1.0/class-debug", "arale/
     }
 });
 
-define("arale/base/1.1.1/aspect-debug", [], function(require, exports) {
+define("anima/base/2.0.0/aspect-debug", [], function(require, exports) {
     // Aspect
     // ---------------------
     // Thanks to:
@@ -94,7 +93,7 @@ define("arale/base/1.1.1/aspect-debug", [], function(require, exports) {
     }
 });
 
-define("arale/base/1.1.1/attribute-debug", [], function(require, exports) {
+define("anima/base/2.0.0/attribute-debug", [], function(require, exports) {
     // Attribute
     // -----------------
     // Thanks to:
@@ -126,11 +125,11 @@ define("arale/base/1.1.1/attribute-debug", [], function(require, exports) {
         var val = attr.value;
         return attr.getter ? attr.getter.call(this, val, key) : val;
     };
-    // Set a hash of model attributes on the object, firing `"change"` unless
+    // Set a hash of model attributes on the object, firing `'change'` unless
     // you choose to silence it.
     exports.set = function(key, val, options) {
         var attrs = {};
-        // set("key", val, options)
+        // set('key', val, options)
         if (isString(key)) {
             attrs[key] = val;
         } else {
@@ -175,8 +174,8 @@ define("arale/base/1.1.1/attribute-debug", [], function(require, exports) {
         }
         return this;
     };
-    // Call this method to manually fire a `"change"` event for triggering
-    // a `"change:attribute"` event for each changed attribute.
+    // Call this method to manually fire a `'change'` event for triggering
+    // a `'change:attribute'` event for each changed attribute.
     exports.change = function() {
         var changed = this.__changedAttrs;
         if (changed) {
@@ -196,28 +195,6 @@ define("arale/base/1.1.1/attribute-debug", [], function(require, exports) {
     // -------
     var toString = Object.prototype.toString;
     var hasOwn = Object.prototype.hasOwnProperty;
-    /**
-   * Detect the JScript [[DontEnum]] bug:
-   * In IE < 9 an objects own properties, shadowing non-enumerable ones, are
-   * made non-enumerable as well.
-   * https://github.com/bestiejs/lodash/blob/7520066fc916e205ef84cb97fbfe630d7c154158/lodash.js#L134-L144
-   */
-    /** Detect if own properties are iterated after inherited properties (IE < 9) */
-    var iteratesOwnLast;
-    (function() {
-        var props = [];
-        function Ctor() {
-            this.x = 1;
-        }
-        Ctor.prototype = {
-            valueOf: 1,
-            y: 1
-        };
-        for (var prop in new Ctor()) {
-            props.push(prop);
-        }
-        iteratesOwnLast = props[0] !== "x";
-    })();
     var isArray = Array.isArray || function(val) {
         return toString.call(val) === "[object Array]";
     };
@@ -227,15 +204,9 @@ define("arale/base/1.1.1/attribute-debug", [], function(require, exports) {
     function isFunction(val) {
         return toString.call(val) === "[object Function]";
     }
-    function isWindow(o) {
-        return o != null && o == o.window;
-    }
     function isPlainObject(o) {
         // Must be an Object.
-        // Because of IE, we also have to check the presence of the constructor
-        // property. Make sure that DOM nodes and window objects don't
-        // pass through, as well
-        if (!o || toString.call(o) !== "[object Object]" || o.nodeType || isWindow(o)) {
+        if (!o || toString.call(o) !== "[object Object]") {
             return false;
         }
         try {
@@ -248,21 +219,13 @@ define("arale/base/1.1.1/attribute-debug", [], function(require, exports) {
             return false;
         }
         var key;
-        // Support: IE<9
-        // Handle iteration over inherited properties before own properties.
-        // http://bugs.jquery.com/ticket/12199
-        if (iteratesOwnLast) {
-            for (key in o) {
-                return hasOwn.call(o, key);
-            }
-        }
         // Own properties are enumerated firstly, so to speed up,
         // if last one is own, then all properties are own.
         for (key in o) {}
         return key === undefined || hasOwn.call(o, key);
     }
     function isEmptyObject(o) {
-        if (!o || toString.call(o) !== "[object Object]" || o.nodeType || isWindow(o) || !o.hasOwnProperty) {
+        if (!o || toString.call(o) !== "[object Object]") {
             return false;
         }
         for (var p in o) {
@@ -271,22 +234,23 @@ define("arale/base/1.1.1/attribute-debug", [], function(require, exports) {
         return true;
     }
     function merge(receiver, supplier) {
-        var key, value;
+        var key;
         for (key in supplier) {
             if (supplier.hasOwnProperty(key)) {
-                value = supplier[key];
-                // 只 clone 数组和 plain object，其他的保持不变
-                if (isArray(value)) {
-                    value = value.slice();
-                } else if (isPlainObject(value)) {
-                    var prev = receiver[key];
-                    isPlainObject(prev) || (prev = {});
-                    value = merge(prev, value);
-                }
-                receiver[key] = value;
+                receiver[key] = cloneValue(supplier[key], receiver[key]);
             }
         }
         return receiver;
+    }
+    // 只 clone 数组和 plain object，其他的保持不变
+    function cloneValue(value, prev) {
+        if (isArray(value)) {
+            value = value.slice();
+        } else if (isPlainObject(value)) {
+            isPlainObject(prev) || (prev = {});
+            value = merge(prev, value);
+        }
+        return value;
     }
     var keys = Object.keys;
     if (!keys) {
@@ -319,11 +283,11 @@ define("arale/base/1.1.1/attribute-debug", [], function(require, exports) {
         }
         // Merge and clone default values to instance.
         for (var i = 0, len = inherited.length; i < len; i++) {
-            merge(attrs, normalize(inherited[i]));
+            mergeAttrs(attrs, normalize(inherited[i]));
         }
     }
     function mergeUserValue(attrs, config) {
-        merge(attrs, normalize(config, true));
+        mergeAttrs(attrs, normalize(config, true), true);
     }
     function copySpecialProps(specialProps, receiver, supplier, isAttr2Prop) {
         for (var i = 0, len = specialProps.length; i < len; i++) {
@@ -391,6 +355,35 @@ define("arale/base/1.1.1/attribute-debug", [], function(require, exports) {
         }
         return newAttrs;
     }
+    var ATTR_OPTIONS = [ "setter", "getter", "readOnly" ];
+    // 专用于 attrs 的 merge 方法
+    function mergeAttrs(attrs, inheritedAttrs, isUserValue) {
+        var key, value;
+        var attr;
+        for (key in inheritedAttrs) {
+            if (inheritedAttrs.hasOwnProperty(key)) {
+                value = inheritedAttrs[key];
+                attr = attrs[key];
+                if (!attr) {
+                    attr = attrs[key] = {};
+                }
+                // 从严谨上来说，遍历 ATTR_SPECIAL_KEYS 更好
+                // 从性能来说，直接 人肉赋值 更快
+                // 这里还是选择 性能优先
+                // 只有 value 要复制原值，其他的直接覆盖即可
+                value["value"] !== undefined && (attr["value"] = cloneValue(value["value"], attr["value"]));
+                // 如果是用户赋值，只要考虑value
+                if (isUserValue) continue;
+                for (var i in ATTR_OPTIONS) {
+                    var option = ATTR_OPTIONS[i];
+                    if (value[option] !== undefined) {
+                        attr[option] = value[option];
+                    }
+                }
+            }
+        }
+        return attrs;
+    }
     function hasOwnProperties(object, properties) {
         for (var i = 0, len = properties.length; i < len; i++) {
             if (object.hasOwnProperty(properties[i])) {
@@ -416,7 +409,7 @@ define("arale/base/1.1.1/attribute-debug", [], function(require, exports) {
           // Strings, numbers, dates, and booleans are compared by value.
             case "[object String]":
             // Primitives and their corresponding object wrappers are
-            // equivalent; thus, `"5"` is equivalent to `new String("5")`.
+            // equivalent; thus, `'5'` is equivalent to `new String('5')`.
             return a == String(b);
 
           case "[object Number]":

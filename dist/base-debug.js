@@ -1,9 +1,9 @@
-define("anima/base/2.0.0/base-debug", [ "anima/class/2.0.0/class-debug", "anima/events/1.1.0/events-debug", "./aspect-debug", "./attribute-debug" ], function(require, exports, module) {
+define("anima/base/1.0.0/base-debug", [ "anima/class/1.0.0/class-debug", "anima/events/1.0.0/events-debug", "./aspect-debug", "./attribute-debug" ], function(require, exports, module) {
     // Base
     // ---------
     // Base 是一个基础类，提供 Class、Events、Attrs 和 Aspect 支持。
-    var Class = require("anima/class/2.0.0/class-debug");
-    var Events = require("anima/events/1.1.0/events-debug");
+    var Class = require("anima/class/1.0.0/class-debug");
+    var Events = require("anima/events/1.0.0/events-debug");
     var Aspect = require("./aspect-debug");
     var Attribute = require("./attribute-debug");
     module.exports = Class.create({
@@ -40,7 +40,7 @@ define("anima/base/2.0.0/base-debug", [ "anima/class/2.0.0/class-debug", "anima/
     }
 });
 
-define("anima/base/2.0.0/aspect-debug", [], function(require, exports) {
+define("anima/base/1.0.0/aspect-debug", [], function(require, exports) {
     // Aspect
     // ---------------------
     // Thanks to:
@@ -93,7 +93,7 @@ define("anima/base/2.0.0/aspect-debug", [], function(require, exports) {
     }
 });
 
-define("anima/base/2.0.0/attribute-debug", [], function(require, exports) {
+define("anima/base/1.0.0/attribute-debug", [], function(require, exports) {
     // Attribute
     // -----------------
     // Thanks to:

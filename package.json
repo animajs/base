@@ -1,7 +1,7 @@
 {
     "name": "base",
     "family": "anima",
-    "version": "2.0.0",
+    "version": "1.0.0",
     "description": "Base 是一个基础类，提供 Class、Events、Attribute 和 Aspect 支持。",
     "keywords": ["infrastructure"],
     "homepage": "http://aralejs.org/base",
@@ -19,8 +19,8 @@
     },
     "spm": {
         "alias": {
-            "class": "anima/class/2.0.0/class",
-            "events": "anima/events/1.1.0/events"
+            "class": "anima/class/1.0.0/class",
+            "events": "anima/events/1.0.0/events"
         },
         "output": ["base.js"]
     }

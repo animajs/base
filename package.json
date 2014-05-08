@@ -3,7 +3,7 @@
     "version": "1.0.0",
     "description": "Base 是一个基础类，提供 Class、Events、Attribute 和 Aspect 支持。",
     "keywords": ["infrastructure"],
-    "homepage": "http://aralejs.org/base",
+    "homepage": "http://animajs.org/base",
     "author": "贯高 <sakura9515@gmail.com>",
     "maintainers": [
         "玉伯 <lifesinger@gmail.com>",
@@ -11,10 +11,10 @@
     ],
     "repository": {
         "type": "git",
-        "url": "https://github.com/aralejs/base.git"
+        "url": "https://github.com/animajs/base.git"
     },
     "bugs": {
-        "url": "https://github.com/aralejs/base/issues"
+        "url": "https://github.com/animajs/base/issues"
     },
     "spm": {
         "dependencies": {

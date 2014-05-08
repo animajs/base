@@ -17,9 +17,9 @@
         "url": "https://github.com/aralejs/base/issues"
     },
     "spm": {
-        "alias": {
-            "class": "anima/class/1.0.0/class",
-            "events": "anima/events/1.0.0/events"
+        "dependencies": {
+            "anima-class": "1.0.0",
+            "anima-events": "1.0.0"
         },
         "main": "index.js"
     }

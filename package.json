@@ -1,6 +1,5 @@
 {
-    "name": "base",
-    "family": "anima",
+    "name": "anima-base",
     "version": "1.0.0",
     "description": "Base 是一个基础类，提供 Class、Events、Attribute 和 Aspect 支持。",
     "keywords": ["infrastructure"],
@@ -22,6 +21,6 @@
             "class": "anima/class/1.0.0/class",
             "events": "anima/events/1.0.0/events"
         },
-        "output": ["base.js"]
+        "main": "index.js"
     }
 }
